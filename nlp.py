@@ -3,6 +3,7 @@
 import bisect
 import itertools
 import random
+import re
 
 import nltk
 from konlpy.corpus import kolaw
@@ -20,14 +21,32 @@ def generate_sentence(cfdist, word, num=5):
         x = random.random() * cumdist[-1]
         word = choices[bisect.bisect(cumdist, x)]
 
-    return ' '.join(sentence)
+    regEx = re.compile('^J|^E|^X')
+    res = ''
+    for i in sentence:
+        if regEx.match(Mecab.pos(i)==None):
+            res += i
+
+        else:
+            res += ' '
+            res += i
+        
+
+    return res
 
 
 def calc_cfd(doc):
     words = [w for w, t in Mecab().pos(doc)]
-    bigrams = nltk.bigrams(words)
-    return nltk.ConditionalFreqDist(bigrams)
+    ngrams = nltk.ngrams(words, n=2)
+    #condition_pairs = (((w0, w1), w2) for w0, w1, w2 in ngrams)
+    return nltk.ConditionalFreqDist(ngrams)
 
+'''def calc_cfd(doc):
+    words = [w for w, t in Mecab().pos(doc)]
+    ngrams = nltk.ngrams(words, n=3)
+    condition_pairs = (((w0, w1), w2) for w0, w1, w2 in ngrams)
+    return nltk.ConditionalFreqDist(condition_pairs)
+'''
 
 if __name__=='__main__':
     nsents = 5 
