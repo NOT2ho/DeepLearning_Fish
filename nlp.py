@@ -20,7 +20,7 @@ def generate_sentence(cfdist, word, num=5):
         x = random.random() * cumdist[-1]
         word = choices[bisect.bisect(cumdist, x)]
 
-    return '-'.join(sentence)
+    return ' '.join(sentence)
 
 
 def calc_cfd(doc):
